@@ -15,7 +15,7 @@ class UsersTableSeeder extends Seeder
                 'name' => 'John',
                 'surname' => 'Doe',
                 'email' => 'john@example.com',
-                'password' => bcrypt('test1234'), // Asegúrate de encriptar la contraseña
+                'password' => bcrypt('test1234'),
                 'role' => 'admin',
                 'description' => 'Administrator user',
                 'image' => null,
@@ -33,6 +33,41 @@ class UsersTableSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
+            [
+                'name' => 'Fulano',
+                'surname' => 'Silva',
+                'email' => 'fulanos@example.com',
+                'password' => bcrypt('test1234'),
+                'role' => 'user',
+                'description' => 'Regular user',
+                'image' => null,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'Beltrano',
+                'surname' => 'Santos',
+                'email' => 'beltranos@example.com',
+                'password' => bcrypt('test1234'),
+                'role' => 'user',
+                'description' => 'Regular user',
+                'image' => null,
+                'created_at' => now(),
+                'updated_at' => now(),
+
+            ],
+            [
+                'name' => 'Ciclano',
+                'surname' => 'Souza',
+                'email' => 'ciclanos@example.com',
+                'password' => bcrypt('test1234'),
+                'role' => 'user',
+                'description' => 'Regular user',
+                'image' => null,
+                'created_at' => now(),
+                'updated_at' => now(),
+
+            ]
         ]);
     }
 }

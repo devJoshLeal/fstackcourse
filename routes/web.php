@@ -18,18 +18,17 @@ Route::get('/', function () {
 });
 
 Route::controller(App\Http\Controllers\UserController::class)->group(function () {
-    //Route::get('/usuario/probando', 'testing');
     Route::post('/api/register','register');
     Route::post('/api/login','login');
 
 
 });
 Route::controller(App\Http\Controllers\PostController::class)->group(function () {
-    //Route::get('/posts/probando', 'testing');
+
 
 });
 Route::controller(App\Http\Controllers\CategoryController::class)->group(function () {
-    //Route::get('/categorias/probando', 'testing');
+
 
 });
 
