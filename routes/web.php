@@ -18,10 +18,10 @@ Route::get('/', function () {
 });
 
 Route::controller(App\Http\Controllers\UserController::class)->group(function () {
-    Route::post('/api/register','register');
-    Route::post('/api/login','login');
-
-
+    Route::post('/api/register','register')->middleware('api.checkparams');
+    Route::post('/api/login','login')->middleware('api.checkparams');
+    Route::put('/api/user/update','update')->middleware('api.auth')->middleware('api.checkparams');
+    Route::post('/api/user/upload', 'upload');
 });
 Route::controller(App\Http\Controllers\PostController::class)->group(function () {
 
