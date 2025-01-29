@@ -133,6 +133,38 @@ class UserController extends Controller
     }
 
     public function upload( Request $request){
+        $data = $this->dataTemplate;
+        $token = $request->header('Authorization');
+        $jwtAuth = new \JwtAuth();
+        $userByToken = $jwtAuth->checkToken($token, true);
+        // Recoger datos de la peticion
+        $imageFile = $request->file('file0');
+        // Guardar la imagen
+        if($imageFile){
+            $imageName = 'userprofile-'.$userByToken->sub.'_'.time().'.' . $imageFile->getClientOriginalExtension();
+            if(\Storage::disk('users')->put($imageName, \File::get($imageFile))){
+                $userUpdated = User::where('id', $userByToken->sub)->update([
+                    'image' => $imageName
+                ]);
+                $data['message'] = "Imagen subida correctamente";
+                $data['image'] = $imageName;
+            }
+            else {
+                $data['code'] = 400;
+                $data['status'] = 'error';
+                $data['message'] = "Error al subir la imagen!!";
+            }
+        }
+        else{
+            $data['code'] = 400;
+            $data['status'] = 'error';
+            $data['message'] = "Error al subir la imagen!";
+        }
+
+        // Devolver el resultado
+        return response()->json($data, $data["code"]);
+
+
 
     }
 
