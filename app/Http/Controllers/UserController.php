@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use App\Models\User;
 
 class UserController extends Controller
@@ -10,9 +11,7 @@ class UserController extends Controller
     public $dataTemplate = array(
         'status'    => 'success',
         'code'      => 200,
-        'message'   => '',
-        'data'      => array(),
-        'errors'    => array()
+        'message'   => ''
     );
     public function testing(Request $request){
         return "Probando el controlador de usuarios";
@@ -93,6 +92,23 @@ class UserController extends Controller
 
 
     }
+    public function profile($userId){
+        $data = $this->dataTemplate;
+        $user = User::find($userId);
+        if(is_object($user)){
+            $data['code'] = 200;
+            $data['status'] = 'success';
+            $data['message'] = "Usuario encontrado";
+            $data['data'] = $user;
+        }
+        else{
+            $data['code'] = 404;
+            $data['status'] = 'error';
+            $data['message'] = "Este usuario no existe";
+        }
+        return response()->json($data, $data['code']);
+    }
+
     public function update(Request $request){
         $data = $this->dataTemplate;
         $json = $request->input('json', null);
@@ -139,32 +155,45 @@ class UserController extends Controller
         $userByToken = $jwtAuth->checkToken($token, true);
         // Recoger datos de la peticion
         $imageFile = $request->file('file0');
+        // Validar imagen
+        $validate = \Validator::make($request->all(), [
+            'file0' => 'required|image|mimes:jpg,jpeg,png,gif,webp, svg',
+        ]);
+
         // Guardar la imagen
-        if($imageFile){
-            $imageName = 'userprofile-'.$userByToken->sub.'_'.time().'.' . $imageFile->getClientOriginalExtension();
-            if(\Storage::disk('users')->put($imageName, \File::get($imageFile))){
-                $userUpdated = User::where('id', $userByToken->sub)->update([
-                    'image' => $imageName
-                ]);
-                $data['message'] = "Imagen subida correctamente";
-                $data['image'] = $imageName;
-            }
-            else {
-                $data['code'] = 400;
-                $data['status'] = 'error';
-                $data['message'] = "Error al subir la imagen!!";
-            }
-        }
-        else{
+        if(!$imageFile || $validate->fails()){
             $data['code'] = 400;
             $data['status'] = 'error';
-            $data['message'] = "Error al subir la imagen!";
+            $data['message'] =
+            $validate->fails() ? "Error en la validación de datos" : "Error al subir la imagen";
+        }
+        else{
+            $imageName =
+            'userprofile-'.$userByToken->sub.'_'.time().'.' . $imageFile->getClientOriginalExtension();
+            \Storage::disk('users')->put($imageName, \File::get($imageFile));
+            $userUpdated = User::where('id', $userByToken->sub)->update([
+                'image' => $imageName
+            ]);
+            $data['message'] = "Imagen subida correctamente";
+            $data['image'] = $imageName;
         }
 
         // Devolver el resultado
         return response()->json($data, $data["code"]);
-
-
+    }
+    public function getImage($fileName){
+        $data = $this->dataTemplate;
+        $exists = \Storage::disk('users')->exists($fileName);
+        if($exists){
+            $file = \Storage::disk('users')->get($fileName);
+            return new Response($file, 200);
+        }
+        else{
+            $data['code'] = 404;
+            $data['status'] = 'error';
+            $data['message'] = "Imagen no encontrada";
+            return response()->json($data, $data["code"]);
+        }
 
     }
 

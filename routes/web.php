@@ -16,19 +16,23 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+// Rutas pertenecientes a la Api
+Route::group(['prefix' => 'api'], function () {
+    // Rutas para el controlador de usuarios
+    Route::controller(App\Http\Controllers\UserController::class)->group(function () {
+        Route::post('/register','register')->middleware('api.checkparams');
+        Route::post('/login','login')->middleware('api.checkparams');
+        Route::put('/user/update','update')->middleware('api.auth')->middleware('api.checkparams');
+        Route::post('/user/upload', 'upload')->middleware('api.auth');
+        Route::get('/user/profile/{userId}','profile');
+        Route::get('/user/avatar/{fileName}','getImage');
+    });
+    // Rutas para el controlador de productos
+    Route::controller(App\Http\Controllers\PostController::class)->group(function () {
 
-Route::controller(App\Http\Controllers\UserController::class)->group(function () {
-    Route::post('/api/register','register')->middleware('api.checkparams');
-    Route::post('/api/login','login')->middleware('api.checkparams');
-    Route::put('/api/user/update','update')->middleware('api.auth')->middleware('api.checkparams');
-    Route::post('/api/user/upload', 'upload')->middleware('api.auth');
+
+    });
+    // Rutas para el controlador de categorias
+    Route::resource('category', App\Http\Controllers\CategoryController::class);
+
 });
-Route::controller(App\Http\Controllers\PostController::class)->group(function () {
-
-
-});
-Route::controller(App\Http\Controllers\CategoryController::class)->group(function () {
-
-
-});
-

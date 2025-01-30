@@ -22,7 +22,7 @@ class ApiParamsMiddleware
         }
         $params_array = json_decode($json, true);
         if (json_last_error() !== JSON_ERROR_NONE) {
-            return response()->json(['error' => 'Los datos enviados no estan en formato JSON'], 400);
+            return response()->json(['error' => 'Los datos enviados no estan en formato JSON de forma correcta '], 400);
         }
         if(empty($params_array)){
             return response()->json(['error' => 'No se enviaron parametros'], 400);
