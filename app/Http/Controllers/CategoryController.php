@@ -90,7 +90,11 @@ class CategoryController extends Controller
                 $this->apiTemplate['message'] = 'La categoría se ha actualizado correctamente';
             }
         }
-
-
+        else{
+            $this->apiTemplate['status'] = 'error';
+            $this->apiTemplate['code'] = 404;
+            $this->apiTemplate['message'] = 'La categoría no existe';
+        }
+        return response()->json($this->apiTemplate, $this->apiTemplate['code']);
     }
 }

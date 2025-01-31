@@ -27,11 +27,8 @@ Route::group(['prefix' => 'api'], function () {
         Route::get('/user/profile/{userId}','profile');
         Route::get('/user/avatar/{fileName}','getImage');
     });
-    // Rutas para el controlador de productos
-    Route::controller(App\Http\Controllers\PostController::class)->group(function () {
-
-
-    });
+    // Rutas para el controlador de publicaciones
+    Route::resource('post', App\Http\Controllers\PostController::class);
     // Rutas para el controlador de categorias
     Route::resource('category', App\Http\Controllers\CategoryController::class);
 
